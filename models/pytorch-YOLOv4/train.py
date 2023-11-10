@@ -246,6 +246,8 @@ class Yolo_loss(nn.Module):
             output[..., np.r_[:2, 4:n_ch]] = torch.sigmoid(output[..., np.r_[:2, 4:n_ch]])
 
             pred = output[..., :4].clone()
+            print(pred[..., 0].size())
+            print(self.grid_x[output_id].size())
             pred[..., 0] += self.grid_x[output_id]
             pred[..., 1] += self.grid_y[output_id]
             pred[..., 2] = torch.exp(pred[..., 2]) * self.anchor_w[output_id]
@@ -377,6 +379,10 @@ def train(model, device, config, epochs=5, batch_size=1, save_cp=True, log_step=
                 bboxes = bboxes.to(device=device)
 
                 bboxes_pred = model(images)
+                # print(bboxes_pred.shape)
+                # print(bboxes.shape)
+                # print(bboxes_pred)
+                # print(bboxes)
                 loss, loss_xy, loss_wh, loss_obj, loss_cls, loss_l2 = criterion(bboxes_pred, bboxes)
                 # loss = loss / config.subdivisions
                 loss.backward()
@@ -545,6 +551,7 @@ def get_args(**kwargs):
     parser.add_argument('-pretrained', type=str, default=None, help='pretrained yolov4.conv.137')
     parser.add_argument('-classes', type=int, default=80, help='dataset classes')
     parser.add_argument('-train_label_path', dest='train_label', type=str, default='train.txt', help="train label path")
+    parser.add_argument('-val_label_path', dest='val_label', type=str, default='val.txt', help="val label path")
     parser.add_argument(
         '-optimizer', type=str, default='adam',
         help='training optimizer',
@@ -621,7 +628,7 @@ if __name__ == "__main__":
     if torch.cuda.device_count() > 1:
         model = torch.nn.DataParallel(model)
     model.to(device=device)
-
+    # print(model.eval())
     try:
         train(model=model,
               config=cfg,
