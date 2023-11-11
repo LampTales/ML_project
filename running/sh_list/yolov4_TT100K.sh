@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -o zjob.%j.log
+#SBATCH -o ../log/yolov4_TT100K/job.%j.log
 #SBATCH --partition=gpulab02
 #SBATCH -J pytorch_job_1
 #SBATCH -N 1
@@ -8,4 +8,5 @@
 #SBATCH --qos=gpulab02
 
 source activate ML
+cd ../../models/pytorch-YOLOv4
 python train.py -g 0 -pretrained ./weights/yolov4.pth -classes 221 -dir ./../../data/TT100K/data/train/ -train_label_path ./../../data/TT100K/train.txt -val_label_path ./../../data/TT100K/val.txt
