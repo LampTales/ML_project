@@ -1,2 +1,4 @@
 data/
+datasets/
 models/pytorch-YOLOv4/weights/
+test/

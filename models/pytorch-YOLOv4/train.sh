@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -o zjob.%j.log
+#SBATCH -o jobs/job.%j.log
 #SBATCH --partition=gpulab02
 #SBATCH -J pytorch_job_1
 #SBATCH -N 1

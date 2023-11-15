@@ -132,7 +132,7 @@ class Yolo_loss(nn.Module):
         super(Yolo_loss, self).__init__()
         self.device = device
         self.strides = [8, 16, 32]
-        image_size = 2048
+        image_size = 608
         self.n_classes = n_classes
         self.n_anchors = n_anchors
 
@@ -246,8 +246,8 @@ class Yolo_loss(nn.Module):
             output[..., np.r_[:2, 4:n_ch]] = torch.sigmoid(output[..., np.r_[:2, 4:n_ch]])
 
             pred = output[..., :4].clone()
-            print(pred[..., 0].size())
-            print(self.grid_x[output_id].size())
+            # print(pred[..., 0].size())
+            # print(self.grid_x[output_id].size())
             pred[..., 0] += self.grid_x[output_id]
             pred[..., 1] += self.grid_y[output_id]
             pred[..., 2] = torch.exp(pred[..., 2]) * self.anchor_w[output_id]
@@ -297,10 +297,12 @@ def train(model, device, config, epochs=5, batch_size=1, save_cp=True, log_step=
     n_train = len(train_dataset)
     n_val = len(val_dataset)
 
-    train_loader = DataLoader(train_dataset, batch_size=config.batch // config.subdivisions, shuffle=True,
-                              num_workers=8, pin_memory=True, drop_last=True, collate_fn=collate)
 
-    val_loader = DataLoader(val_dataset, batch_size=config.batch // config.subdivisions, shuffle=True, num_workers=8,
+    # modifiy the num_workers
+    train_loader = DataLoader(train_dataset, batch_size=config.batch // config.subdivisions, shuffle=True,
+                              num_workers=0, pin_memory=True, drop_last=True, collate_fn=collate)
+
+    val_loader = DataLoader(val_dataset, batch_size=config.batch // config.subdivisions, shuffle=True, num_workers=0,
                             pin_memory=True, drop_last=True, collate_fn=val_collate)
 
     writer = SummaryWriter(log_dir=config.TRAIN_TENSORBOARD_DIR,
