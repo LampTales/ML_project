@@ -15,3 +15,15 @@ def get_name_id(name):
 
 def get_id_name(id):
     return names[id]
+
+def print_yolo_pairs():
+    for i, name in enumerate(names):
+        print(f'  {i}: {name}')
+
+
+def main():
+    print_yolo_pairs()
+
+
+if __name__ == '__main__':
+    main()
