@@ -6,7 +6,8 @@
 #SBATCH --ntasks-per-node=2
 #SBATCH --gres=gpu:1
 #SBATCH --qos=gpulab02
-#SBATCH --nodelist=gpu029
+#SBATCH --nodelist=gpu030
 
+source ~/.bashrc
 source activate yolo5
-python train.py  --data TT100K.yaml --epochs 300
+python -m torch.distributed.run --nproc_per_node 4 train.py --img 1280 --data TT100K.yaml --epochs 500 --weights 'models/pts/yolov5n.pt' --device 0,1,2,3
