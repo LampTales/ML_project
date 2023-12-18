@@ -1,0 +1,4 @@
+- Object too small
+    - test/81434
+- Object distorted
+    - test/92707

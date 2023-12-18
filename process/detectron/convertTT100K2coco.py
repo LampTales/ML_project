@@ -8,13 +8,8 @@ import time
 strattime = time.time()
 TT100K_DATA_PATH = os.environ.get('TT100K_DATA_PATH')
 print('TT100K_DATA_PATH = {}'.format(TT100K_DATA_PATH))
-DETECTRON_PATH = os.environ.get('DETECTRON_PATH')
-print('DETECTRON_PATH = {}'.format(DETECTRON_PATH))
-
-if not os.path.exists(os.path.join(DETECTRON_PATH, 'datasets/data/TT100K/annotations')):
-    print('Creating annotations directory in {}'.format(os.path.join(DETECTRON_PATH, 'datasets/data/TT100K/annotations')))
-    os.makedirs(os.path.join(DETECTRON_PATH, 'datasets/data/TT100K/'))
-    os.makedirs(os.path.join(DETECTRON_PATH, 'datasets/data/TT100K/annotations'))
+DETECTRON2_PATH = os.environ.get('DETECTRON2_PATH')
+print('DETECTRON_PATH = {}'.format(DETECTRON2_PATH))
 
 
 with open(os.path.join(TT100K_DATA_PATH,'annotations.json')) as origin_json:
@@ -103,15 +98,23 @@ for image_id in images_dic:
         obj_id+=1
     
 
-for phase in ['train','val','test']:
-    json_name = os.path.join(DETECTRON_PATH, 'datasets/data/TT100K/annotations/{}.json'.format(phase))
-    with open(json_name, 'w') as f:
-        if phase == 'train':
-            json.dump(train_dataset, f,ensure_ascii=False,indent=1)
-        if phase == 'val':
-            json.dump(val_dataset, f,ensure_ascii=False,indent=1)
-        if phase == 'test':
-            json.dump(test_dataset, f,ensure_ascii=False,indent=1)
+# for phase in ['train','val','test']:
+#     json_name = os.path.join('/home/ouyl/ML_project/TK100K/detectron2/annotations/{}.json'.format(phase))
+#     with open(json_name, 'w') as f:
+#         if phase == 'train':
+#             json.dump(train_dataset, f,ensure_ascii=False,indent=1)
+#         if phase == 'val':
+#             json.dump(val_dataset, f,ensure_ascii=False,indent=1)
+#         if phase == 'test':
+#             json.dump(test_dataset, f,ensure_ascii=False,indent=1)
+            
+with open('/home/ouyl/ML_project/data/TT100K/detectron2/annotations/label.json', 'w') as f:
+    f.write("[")
+    for i, cls in enumerate(label):
+        f.write('"'+cls+'"')
+        if i!=len(classes)-1:
+            f.write(',')
+    f.write("]")
 
 print("Successfully convert the annotations.json file of TT100K dataset to coco format!")
 print("Time cost: {}s".format(time.time()-strattime))
